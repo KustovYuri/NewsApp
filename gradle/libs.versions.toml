@@ -14,12 +14,14 @@ retrofit = "2.11.0"
 retrofitAdaptersResult = "1.0.9"
 kotlinx-coroutines = "1.9.0-RC"
 kotlin-serialization-json = "1.6.3"
+annotation = "1.8.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
