@@ -1,11 +1,11 @@
 package com.farma.newsapi
 
 import androidx.annotation.IntRange
-import com.farma.newsapi.models.Article
+import com.farma.newsapi.models.ArticleDTO
 import com.farma.newsapi.models.Language
-import com.farma.newsapi.models.Response
+import com.farma.newsapi.models.ResponseDTO
 import com.farma.newsapi.models.SortBy
-import com.farma.newsapi.utils.TimeApiKeyInterceptor
+import com.farma.newsapi.utils.NewsApiKeyInterceptor
 import com.skydoves.retrofit.adapters.result.ResultCallAdapterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
@@ -33,7 +33,7 @@ interface NewsApi {
         @Query("sortBy") sortBy: SortBy? = null,
         @Query("pageSize") @IntRange(from = 0, to = 100) pageSize:Int = 100,
         @Query("page") @IntRange(from = 1)page:Int = 1,
-    ): Result<Response<Article>>
+    ): Result<ResponseDTO<ArticleDTO>>
 }
 
 fun NewsApi(
@@ -54,7 +54,7 @@ private fun retrofit(
     val jsonConverterFactory = json.asConverterFactory(MediaType.get("application/json"))
 
     val modifiedOkHttpClient = (okHttpClient?.newBuilder() ?: OkHttpClient.Builder())
-        .addInterceptor(TimeApiKeyInterceptor(apiKey))
+        .addInterceptor(NewsApiKeyInterceptor(apiKey))
         .build()
 
     return Retrofit.Builder()
