@@ -9,21 +9,21 @@ import com.farma.database.dao.ArticleDao
 import com.farma.database.models.ArticleDBO
 import com.farma.database.utils.Converters
 
-class NewsDatabase internal constructor(private val database: RoomNewsDatabase){
+class NewsDatabase internal constructor(private val database: NewsRoomDatabase){
     val articlesDao: ArticleDao
         get() = database.articlesDao()
 }
 
 @Database(entities = [ArticleDBO::class], version = 1)
 @TypeConverters(Converters::class)
-internal abstract class RoomNewsDatabase: RoomDatabase(){
+internal abstract class NewsRoomDatabase: RoomDatabase(){
     abstract fun articlesDao():ArticleDao
 }
 
 fun NewsDatabase(applicationContext: Context):NewsDatabase{
     val newsRoomDatabase = Room.databaseBuilder(
         checkNotNull(applicationContext.applicationContext),
-        RoomNewsDatabase::class.java,
+        NewsRoomDatabase::class.java,
         "news"
     ).build()
 
