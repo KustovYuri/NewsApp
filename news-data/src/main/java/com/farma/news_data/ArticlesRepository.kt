@@ -7,33 +7,48 @@ import com.farma.newsapi.NewsApi
 import com.farma.newsapi.models.ArticleDTO
 import com.farma.newsapi.models.ResponseDTO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 
 class ArticlesRepository(
     private val database: NewsDatabase,
-    private val api: NewsApi
+    private val api: NewsApi,
+    private val mergeStrategy: MergeStrategy<RequestResult<List<Article>>>,
 ) {
 
-    suspend fun getAll(): Flow<RequestResult<List<Article>>> {
-        val cachedAllArticles: Flow<RequestResult.Success<List<ArticleDBO>>> = getAllFromDatabase()
+     fun getAll(): Flow<RequestResult<List<Article>>> {
+        val cachedAllArticles = getAllFromDatabase()
+            .map { result->
+                result.map { articlesDbos->
+                    articlesDbos.map { it.toArticle() }
+                }
+            }
 
         val remoteArticles = getAllFromServer()
+            .map { result->
+                result.map { response->
+                    response.articles.map { it.toArticle() }
+                }
+            }
 
-        TODO("WORKING")
+        return cachedAllArticles.combine(remoteArticles, mergeStrategy::merge)
     }
 
     private fun getAllFromServer(): Flow<RequestResult<ResponseDTO<ArticleDTO>>> {
-        return flow {
-            emit(RequestResult.InProgress())
-            emit(api.everything().toRequestResult())
-        }
-            .onEach { requestResult ->
-                if (requestResult is RequestResult.Success) {
-                    saveNetResponseToCache(checkNotNull(requestResult.data).articles)
+        val apiRequest = flow { emit(api.everything()) }
+            .onEach { result->
+                if (result.isSuccess){
+                    saveNetResponseToCache(checkNotNull(result.getOrThrow()).articles)
                 }
-            }
+            }.map { it.toRequestResult() }
+
+        val start = flowOf<RequestResult<ResponseDTO<ArticleDTO>>>(RequestResult.InProgress())
+
+        return merge(start, apiRequest)
     }
 
     private suspend fun saveNetResponseToCache(data: List<ArticleDTO>) {
@@ -41,34 +56,11 @@ class ArticlesRepository(
         database.articlesDao.insert(dbos)
     }
 
-    private fun getAllFromDatabase(): Flow<RequestResult.Success<List<ArticleDBO>>> {
-        return database.articlesDao
+    private fun getAllFromDatabase(): Flow<RequestResult<List<ArticleDBO>>> {
+        val dbRequest = database.articlesDao
             .getAll()
             .map { RequestResult.Success(it) }
-    }
-}
-
-sealed class RequestResult<E>(internal val data: E? = null) {
-    class InProgress<E>(data: E? = null) : RequestResult<E>(data)
-    class Success<E>(data: E) : RequestResult<E>(data)
-    class Error<E> : RequestResult<E>()
-}
-
-internal fun <T : Any> RequestResult<T?>.requireData(): T = checkNotNull(data)
-
-internal fun <I, O> RequestResult<I>.map(mapper: (I?) -> O): RequestResult<O> {
-    val outData = mapper(data)
-    return when (this) {
-        is RequestResult.Error -> RequestResult.Error()
-        is RequestResult.InProgress -> RequestResult.InProgress(outData)
-        is RequestResult.Success -> RequestResult.InProgress(outData)
-    }
-}
-
-internal fun <T> Result<T>.toRequestResult(): RequestResult<T>{
-    return when{
-        isSuccess -> RequestResult.Success(getOrThrow())
-        isFailure -> RequestResult.Error()
-        else -> error("Impossible branch")
+        val start = flowOf<RequestResult<List<ArticleDBO>>>(RequestResult.InProgress())
+        return merge(start, dbRequest)
     }
 }
