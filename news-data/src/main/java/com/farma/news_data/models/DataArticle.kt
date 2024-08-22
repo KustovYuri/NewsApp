@@ -2,7 +2,7 @@ package com.farma.news_data.models
 
 import java.util.Date
 
-data class Article(
+data class DataArticle(
     val cacheId:Long,
     val source: Source,
     val author:String,
