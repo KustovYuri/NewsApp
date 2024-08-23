@@ -22,8 +22,8 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "NEWS_API_KEY", "\"\"")
-        buildConfigField("String", "NEWS_API_BASE_URL", "\"\"")
+        buildConfigField("String", "NEWS_API_KEY", "\"37efbf02456f444cac1a5e4028e471c3\"")
+        buildConfigField("String", "NEWS_API_BASE_URL", "\"https://newsapi.org/v2/\"")
     }
 
     buildTypes {
@@ -70,5 +70,6 @@ dependencies {
     implementation(project(":news-data"))
     implementation(project(":database"))
     implementation(project(":newsapi"))
-//    implementation(project(":features:news-main"))
+    implementation(project(":news-common"))
+    implementation(project(":features:news-main"))
 }

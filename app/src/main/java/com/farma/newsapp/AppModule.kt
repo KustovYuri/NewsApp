@@ -1,8 +1,8 @@
 package com.farma.newsapp
 
 import android.content.Context
+import com.farma.common.AppDispatchers
 import com.farma.database.NewsDatabase
-import com.farma.news_data.ArticlesRepository
 import com.farma.newsapi.NewsApi
 import dagger.Module
 import dagger.Provides
@@ -29,4 +29,8 @@ object AppModule {
     fun provideNewsDatabase(@ApplicationContext context: Context): NewsDatabase{
         return NewsDatabase(context)
     }
+
+    @Provides
+    @Singleton
+    fun provideAppCoroutineDispatchers(): AppDispatchers = AppDispatchers()
 }
