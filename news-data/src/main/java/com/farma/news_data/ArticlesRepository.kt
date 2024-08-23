@@ -2,7 +2,7 @@ package com.farma.news_data
 
 import com.farma.database.NewsDatabase
 import com.farma.database.models.ArticleDBO
-import com.farma.news_data.models.DataArticle
+import com.farma.news_data.models.Article
 import com.farma.newsapi.NewsApi
 import com.farma.newsapi.models.ArticleDTO
 import com.farma.newsapi.models.ResponseDTO
@@ -25,8 +25,8 @@ class ArticlesRepository @Inject constructor(
 
      @OptIn(ExperimentalCoroutinesApi::class)
      fun getAll(
-         mergeStrategy: MergeStrategy<RequestResult<List<DataArticle>>> = RequestResponseMergeStrategy()
-     ): Flow<RequestResult<List<DataArticle>>> {
+         mergeStrategy: MergeStrategy<RequestResult<List<Article>>> = RequestResponseMergeStrategy()
+     ): Flow<RequestResult<List<Article>>> {
         val cachedAllArticles = getAllFromDatabase()
 
         val remoteArticles = getAllFromServer()
@@ -43,7 +43,7 @@ class ArticlesRepository @Inject constructor(
             }
     }
 
-    private fun getAllFromServer(): Flow<RequestResult<List<DataArticle>>> {
+    private fun getAllFromServer(): Flow<RequestResult<List<Article>>> {
         val apiRequest = flow { emit(api.everything()) }
             .onEach { result ->
                 if (result.isSuccess) {
@@ -66,7 +66,7 @@ class ArticlesRepository @Inject constructor(
         database.articlesDao.insert(dbos)
     }
 
-    private fun getAllFromDatabase(): Flow<RequestResult<List<DataArticle>>> {
+    private fun getAllFromDatabase(): Flow<RequestResult<List<Article>>> {
         val dbRequest = database.articlesDao::getAll.asFlow()
             .map { RequestResult.Success(it) }
         val start = flowOf<RequestResult<List<ArticleDBO>>>(RequestResult.InProgress())
