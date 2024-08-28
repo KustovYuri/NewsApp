@@ -10,13 +10,13 @@ import java.util.Date
 data class ArticleDBO(
     @PrimaryKey(autoGenerate = true) val id:Long = 0,
     @Embedded("source-") val source: SourceDBO?,
-    @ColumnInfo("author") val author:String,
-    @ColumnInfo("title") val title:String,
-    @ColumnInfo("description") val description: String,
-    @ColumnInfo("url") val url:String,
-    @ColumnInfo("urlToImage") val urlToImage:String,
-    @ColumnInfo("publishedAt") val publishedAt: Date,
-    @ColumnInfo("content") val content: String,
+    @ColumnInfo("author") val author:String?,
+    @ColumnInfo("title") val title:String?,
+    @ColumnInfo("description") val description: String?,
+    @ColumnInfo("url") val url:String?,
+    @ColumnInfo("urlToImage") val urlToImage:String?,
+    @ColumnInfo("publishedAt") val publishedAt: Date?,
+    @ColumnInfo("content") val content: String?,
 )
 
 data class SourceDBO(

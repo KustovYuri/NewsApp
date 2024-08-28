@@ -24,7 +24,7 @@ interface NewsApi {
     /**
      * API details [here](https://newsapi.org/docs/endpoints/everything)
      */
-    @GET("/everything")
+    @GET("everything")
     suspend fun everything(
         @Query("q") query:String? = null,
         @Query("from") from: Date? = null,
@@ -40,8 +40,9 @@ fun NewsApi(
     baseUrl:String,
     apiKey: String,
     json: Json = Json,
+    okHttpClient: OkHttpClient? = null
 ): NewsApi {
-    return retrofit(baseUrl, apiKey,null, json).create()
+    return retrofit(baseUrl, apiKey,okHttpClient, json).create()
 }
 
 private fun retrofit(
