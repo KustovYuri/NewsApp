@@ -57,15 +57,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
+    debugImplementation(libs.okhttp.logging.interceptor)
 
     implementation(libs.dagger.hilt.android)
     kapt(libs.dagger.hilt.compiler)
@@ -75,4 +69,5 @@ dependencies {
     implementation(project(":newsapi"))
     implementation(project(":news-common"))
     implementation(project(":features:news-main"))
+    implementation(project(":news-uikit"))
 }

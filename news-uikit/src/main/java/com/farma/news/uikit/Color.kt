@@ -1,4 +1,4 @@
-package com.farma.newsapp.ui.theme
+package com.farma.news.uikit
 
 import androidx.compose.ui.graphics.Color
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.farma.news_main.State.*
 
@@ -51,9 +52,9 @@ internal fun ArticlesWithError(articles: List<ArticleUI>?) {
     Column {
         Box(
             modifier = Modifier
-                .padding(24.dp)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.error),
+                .background(MaterialTheme.colorScheme.error)
+                .padding(24.dp),
             contentAlignment = Alignment.Center
         ){
             Text(text = "Error during update", color = MaterialTheme.colorScheme.onError)
@@ -72,8 +73,8 @@ internal fun ArticlesDuringUpdate(
     Column {
         Box(
             modifier = Modifier
-                .padding(24.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(24.dp),
             contentAlignment = Alignment.Center
         ){
             CircularProgressIndicator()
@@ -114,9 +115,20 @@ private fun Article(
     article: ArticleUI
 ) {
     Column(modifier = Modifier.padding(8.dp)) {
-        Text(text = article.title.toString(), style = MaterialTheme.typography.headlineMedium, maxLines = 1)
+        Text(
+            text = article.title.toString(),
+            style = MaterialTheme.typography.headlineMedium,
+            maxLines = 1,
+            fontSize = 24.sp
+        )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = article.description.toString(), style = MaterialTheme.typography.headlineSmall, maxLines = 3)
+        Text(
+            text = article.description.toString(),
+            style = MaterialTheme.typography.headlineSmall,
+            maxLines = 3,
+            fontSize = 16.sp,
+            lineHeight = 24.sp
+        )
     }
 }
 

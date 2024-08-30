@@ -1,4 +1,4 @@
-package com.farma.newsapp.ui.theme
+package com.farma.news.uikit
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
