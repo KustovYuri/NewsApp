@@ -4,16 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.farma.news.uikit.NewsTheme
 import com.farma.news_main.State.*
 
 
@@ -38,52 +36,52 @@ fun NewsMainScreen() {
 @Composable
 internal fun NewsMainScreen(viewModel: NewsMainViewModel) {
     val state by viewModel.state.collectAsState()
-
-    when(val currentState = state){
-        is Success -> Articles(currentState.articleUIs)
-        is Error -> ArticlesWithError(currentState.articleUIs)
-        is Loading -> ArticlesDuringUpdate(currentState.articleUIs)
-        None -> NewsEmpty()
+    val currentState = state
+    if (currentState != None){
+        NewsMainContent(currentState)
     }
 }
 
 @Composable
-internal fun ArticlesWithError(articles: List<ArticleUI>?) {
+private fun NewsMainContent(currentState: State) {
     Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.error)
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ){
-            Text(text = "Error during update", color = MaterialTheme.colorScheme.onError)
+        if (currentState is Error) {
+            ErrorMessage(currentState)
         }
-        if (articles != null){
-            Articles(articles = articles)
+        if (currentState is Loading) {
+            ProgressIndicator(currentState)
+        }
+        if (currentState.articleUIs != null) {
+            Articles(articles = currentState.articleUIs)
         }
     }
 }
 
 @Composable
-internal fun ArticlesDuringUpdate(
-    @PreviewParameter(ArticlesUiPreviewProvider::class, limit = 1)
-    articles: List<ArticleUI>?
-) {
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ){
-            CircularProgressIndicator()
-        }
-        if (articles != null){
-            Articles(articles = articles)
-        }
+private fun ProgressIndicator(state: Loading) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
+
+@Composable
+private fun ErrorMessage(state: Error) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(NewsTheme.colorScheme.error)
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Error during update", color = NewsTheme.colorScheme.onError)
+    }
+}
+
 
 @Composable
 internal fun NewsEmpty() {
@@ -117,14 +115,14 @@ private fun Article(
     Column(modifier = Modifier.padding(8.dp)) {
         Text(
             text = article.title.toString(),
-            style = MaterialTheme.typography.headlineMedium,
+            style = NewsTheme.typography.headlineMedium,
             maxLines = 1,
             fontSize = 24.sp
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = article.description.toString(),
-            style = MaterialTheme.typography.headlineSmall,
+            style = NewsTheme.typography.headlineSmall,
             maxLines = 3,
             fontSize = 16.sp,
             lineHeight = 24.sp
