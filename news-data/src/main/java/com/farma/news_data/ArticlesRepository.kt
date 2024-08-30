@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -31,12 +32,17 @@ class ArticlesRepository @Inject constructor(
          query: String,
          mergeStrategy: MergeStrategy<RequestResult<List<Article>>> = RequestResponseMergeStrategy()
      ): Flow<RequestResult<List<Article>>> {
-        val cachedAllArticles = getAllFromDatabase()
+        val cachedAllArticles = getAllFromDatabase().onEach {
+            logger.d(LOG_TAG, "cache articles status = ${it.javaClass.simpleName}")
+        }
 
-        val remoteArticles = getAllFromServer(query)
+        val remoteArticles = getAllFromServer(query).onEach {
+            logger.d(LOG_TAG, "server articles status = ${it.javaClass.simpleName}")
+        }
 
         return cachedAllArticles.combine(remoteArticles, mergeStrategy::merge)
             .flatMapLatest { result->
+                logger.d(LOG_TAG, "combine all articles = ${result.javaClass.simpleName} ${result.data}")
                 if (result is RequestResult.Success){
                     database.articlesDao.observeAll()
                         .map { dbos -> dbos.map { it.toArticle() } }

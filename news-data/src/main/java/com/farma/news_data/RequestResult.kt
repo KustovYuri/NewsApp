@@ -5,9 +5,9 @@ package com.farma.news_data
  * который может происходить из нескольких источников
  */
 sealed class RequestResult<out E: Any>(open val data: E? = null) {
-    class InProgress<E: Any>(data: E? = null) : RequestResult<E>(data)
+    class InProgress<E: Any>(override val data: E? = null) : RequestResult<E>(data)
     class Success<E: Any>(override val data: E) : RequestResult<E>(data)
-    class Error<E: Any>(data: E? = null, val error:Throwable? =null) : RequestResult<E>()
+    class Error<E: Any>(override val data: E? = null, val error:Throwable? =null) : RequestResult<E>()
 }
 
 fun <I: Any, O: Any> RequestResult<I>.map(mapper: (I) -> O): RequestResult<O> {

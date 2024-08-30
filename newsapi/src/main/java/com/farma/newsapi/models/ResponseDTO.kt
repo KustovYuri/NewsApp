@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 data class ResponseDTO<E>(
     @SerialName("status")
     val status:String,
-    @SerialName("totalResult")
-    val totalResult:Int,
+    @SerialName("totalResults")
+    val totalResults:Int,
     @SerialName("articles")
     val articles:List<E>
 )

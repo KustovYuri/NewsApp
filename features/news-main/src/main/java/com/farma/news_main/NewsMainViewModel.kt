@@ -6,7 +6,9 @@ import com.farma.news_data.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Provider
@@ -17,6 +19,7 @@ internal class NewsMainViewModel @Inject constructor(
 ): ViewModel() {
 
     val state:StateFlow<State> = getAllArticlesUseCase.get().invoke(query = "android")
+        .onEach { println(it.data) }
         .map { it.toState() }
         .stateIn(viewModelScope, SharingStarted.Lazily, State.None)
 }

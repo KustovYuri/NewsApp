@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -99,6 +102,7 @@ private fun Articles(
     LazyColumn {
         items(items = articles, key = {it.id}){ article->
             Article(article)
+            HorizontalDivider(color = Color.Black)
         }
     }
 }
@@ -112,7 +116,7 @@ private fun Article(
     Column(modifier = Modifier.padding(8.dp)) {
         Text(text = article.title.toString(), style = MaterialTheme.typography.headlineMedium, maxLines = 1)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = article.description.toString(), style = MaterialTheme.typography.headlineMedium, maxLines = 3)
+        Text(text = article.description.toString(), style = MaterialTheme.typography.headlineSmall, maxLines = 3)
     }
 }
 
