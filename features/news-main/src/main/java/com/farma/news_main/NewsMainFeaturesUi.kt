@@ -1,12 +1,22 @@
 package com.farma.news_main
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -15,15 +25,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
 import com.farma.news.uikit.NewsTheme
 import com.farma.news_main.State.*
 
@@ -37,7 +54,7 @@ fun NewsMainScreen() {
 internal fun NewsMainScreen(viewModel: NewsMainViewModel) {
     val state by viewModel.state.collectAsState()
     val currentState = state
-    if (currentState != None){
+    if (currentState != None) {
         NewsMainContent(currentState)
     }
 }
@@ -62,8 +79,7 @@ private fun ProgressIndicator(state: Loading) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp),
-        contentAlignment = Alignment.Center
+            .padding(24.dp), contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
     }
@@ -95,51 +111,67 @@ internal fun NewsEmpty() {
 
 @Composable
 private fun Articles(
-    @PreviewParameter(ArticlesUiPreviewProvider::class, limit = 1)
-    articles: List<ArticleUI>
+    @PreviewParameter(ArticlesUiPreviewProvider::class, limit = 1) articles: List<ArticleUI>
 ) {
     LazyColumn {
-        items(items = articles, key = {it.id}){ article->
+        items(items = articles) { article ->
             Article(article)
             HorizontalDivider(color = Color.Black)
         }
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 private fun Article(
-    @PreviewParameter(ArticleUiPreviewProvider::class, limit = 1)
-    article: ArticleUI
+    @PreviewParameter(ArticleUiPreviewProvider::class, limit = 1) article: ArticleUI
 ) {
-    Column(modifier = Modifier.padding(8.dp)) {
-        Text(
-            text = article.title.toString(),
-            style = NewsTheme.typography.headlineMedium,
-            maxLines = 1,
-            fontSize = 24.sp
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = article.description.toString(),
-            style = NewsTheme.typography.headlineSmall,
-            maxLines = 3,
-            fontSize = 16.sp,
-            lineHeight = 24.sp
-        )
+    Row {
+        article.imageUrl?.let { imageUrl ->
+            var isImageVisible by remember { mutableStateOf(true) }
+            if (isImageVisible) {
+                    AsyncImage(
+                        modifier = Modifier.size(150.dp),
+                        model = imageUrl,
+                        onState = { state ->
+                            if (state is AsyncImagePainter.State.Error)
+                                isImageVisible = false
+                        },
+                        contentScale = ContentScale.Crop,
+                        contentDescription = stringResource(R.string.content_description_item_article_image)
+                    )
+                }
+            }
+        Spacer(modifier = Modifier.width(4.dp))
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text(
+                text = article.title.toString(),
+                style = NewsTheme.typography.headlineMedium,
+                maxLines = 1,
+                fontSize = 24.sp
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = article.description.toString(),
+                style = NewsTheme.typography.headlineSmall,
+                maxLines = 3,
+                fontSize = 16.sp,
+                lineHeight = 24.sp
+            )
+        }
     }
 }
 
-private class ArticlesUiPreviewProvider : PreviewParameterProvider<List<ArticleUI>>{
+private class ArticlesUiPreviewProvider : PreviewParameterProvider<List<ArticleUI>> {
     val articlesProvider = ArticleUiPreviewProvider()
 
     override val values = sequenceOf(
-        articlesProvider.values
-            .toList()
+        articlesProvider.values.toList()
     )
 }
 
-private class ArticleUiPreviewProvider : PreviewParameterProvider<ArticleUI>{
+private class ArticleUiPreviewProvider : PreviewParameterProvider<ArticleUI> {
     override val values = sequenceOf(
         ArticleUI(
             id = 1,
@@ -163,5 +195,5 @@ private class ArticleUiPreviewProvider : PreviewParameterProvider<ArticleUI>{
             url = null
         ),
 
-    )
+        )
 }
