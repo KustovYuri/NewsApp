@@ -1,24 +1,24 @@
-package com.farma.news_data.models
+package com.farma.data.models
 
 import java.util.Date
 
 data class Article(
     val cacheId: Long = ID_NONE,
     val source: Source?,
-    val author:String?,
-    val title:String?,
+    val author: String?,
+    val title: String?,
     val description: String?,
-    val url:String?,
-    val urlToImage:String?,
+    val url: String?,
+    val urlToImage: String?,
     val publishedAt: Date?,
     val content: String?,
-){
-    companion object{
+) {
+    companion object {
         const val ID_NONE: Long = 0L
     }
 }
 
 data class Source(
-    val id:String,
-    val name:String
+    val id: String,
+    val name: String
 )

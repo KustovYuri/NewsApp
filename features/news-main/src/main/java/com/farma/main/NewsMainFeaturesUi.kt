@@ -1,22 +1,16 @@
-package com.farma.news_main
+package com.farma.main
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.displayCutoutPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,9 +35,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import com.farma.main.State.Error
+import com.farma.main.State.Loading
+import com.farma.main.State.None
 import com.farma.news.uikit.NewsTheme
-import com.farma.news_main.State.*
-
+import com.farma.news_main.R
 
 @Composable
 fun NewsMainScreen() {
@@ -63,10 +59,10 @@ internal fun NewsMainScreen(viewModel: NewsMainViewModel) {
 private fun NewsMainContent(currentState: State) {
     Column {
         if (currentState is Error) {
-            ErrorMessage(currentState)
+            ErrorMessage(state = currentState)
         }
         if (currentState is Loading) {
-            ProgressIndicator(currentState)
+            ProgressIndicator(state = currentState)
         }
         if (currentState.articleUIs != null) {
             Articles(articles = currentState.articleUIs)
@@ -74,17 +70,20 @@ private fun NewsMainContent(currentState: State) {
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 private fun ProgressIndicator(state: Loading) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp), contentAlignment = Alignment.Center
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
     }
 }
 
+@Suppress("UNUSED_PARAMETER")
 @Composable
 private fun ErrorMessage(state: Error) {
     Box(
@@ -98,7 +97,6 @@ private fun ErrorMessage(state: Error) {
     }
 }
 
-
 @Composable
 internal fun NewsEmpty() {
     Box(
@@ -107,7 +105,6 @@ internal fun NewsEmpty() {
         Text(text = "No news")
     }
 }
-
 
 @Composable
 private fun Articles(
@@ -131,18 +128,19 @@ private fun Article(
         article.imageUrl?.let { imageUrl ->
             var isImageVisible by remember { mutableStateOf(true) }
             if (isImageVisible) {
-                    AsyncImage(
-                        modifier = Modifier.size(150.dp),
-                        model = imageUrl,
-                        onState = { state ->
-                            if (state is AsyncImagePainter.State.Error)
-                                isImageVisible = false
-                        },
-                        contentScale = ContentScale.Crop,
-                        contentDescription = stringResource(R.string.content_description_item_article_image)
-                    )
-                }
+                AsyncImage(
+                    modifier = Modifier.size(150.dp),
+                    model = imageUrl,
+                    onState = { state ->
+                        if (state is AsyncImagePainter.State.Error) {
+                            isImageVisible = false
+                        }
+                    },
+                    contentScale = ContentScale.Crop,
+                    contentDescription = stringResource(R.string.content_description_item_article_image)
+                )
             }
+        }
         Spacer(modifier = Modifier.width(4.dp))
         Column(modifier = Modifier.padding(8.dp)) {
             Text(
@@ -194,6 +192,5 @@ private class ArticleUiPreviewProvider : PreviewParameterProvider<ArticleUI> {
             imageUrl = null,
             url = null
         ),
-
-        )
+    )
 }

@@ -13,7 +13,7 @@ import javax.inject.Singleton
 class BuildTypeModule {
     @Provides
     @Singleton
-    fun providesHttpClient(): OkHttpClient{
+    fun providesHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()

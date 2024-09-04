@@ -1,9 +1,9 @@
-package com.farma.news_data
+package com.farma.data
 
 import com.farma.common.Logger
+import com.farma.data.models.Article
 import com.farma.database.NewsDatabase
 import com.farma.database.models.ArticleDBO
-import com.farma.news_data.models.Article
 import com.farma.newsapi.NewsApi
 import com.farma.newsapi.models.ArticleDTO
 import com.farma.newsapi.models.ResponseDTO
@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,22 +26,22 @@ class ArticlesRepository @Inject constructor(
     private val logger: Logger
 ) {
 
-     @OptIn(ExperimentalCoroutinesApi::class)
-     fun getAll(
-         query: String,
-         mergeStrategy: MergeStrategy<RequestResult<List<Article>>> = RequestResponseMergeStrategy()
-     ): Flow<RequestResult<List<Article>>> {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getAll(
+        query: String,
+        mergeStrategy: MergeStrategy<RequestResult<List<Article>>> = RequestResponseMergeStrategy()
+    ): Flow<RequestResult<List<Article>>> {
         val cachedAllArticles = getAllFromDatabase()
 
         val remoteArticles = getAllFromServer(query)
 
         return cachedAllArticles.combine(remoteArticles, mergeStrategy::merge)
-            .flatMapLatest { result->
-                if (result is RequestResult.Success){
+            .flatMapLatest { result ->
+                if (result is RequestResult.Success) {
                     database.articlesDao.observeAll()
                         .map { dbos -> dbos.map { it.toArticle() } }
                         .map { RequestResult.Success(it) }
-                }else{
+                } else {
                     flowOf(result)
                 }
             }
@@ -55,9 +54,13 @@ class ArticlesRepository @Inject constructor(
                     saveNetResponseToCache(checkNotNull(result.getOrThrow()).articles)
                 }
             }
-            .onEach { result->
-                if (result.isFailure)
-                    logger.e(LOG_TAG, "Error getting from server. Cause = ${result.exceptionOrNull()}")
+            .onEach { result ->
+                if (result.isFailure) {
+                    logger.e(
+                        LOG_TAG,
+                        "Error getting from server. Cause = ${result.exceptionOrNull()}"
+                    )
+                }
             }.map { it.toRequestResult() }
 
         val start = flowOf<RequestResult<ResponseDTO<ArticleDTO>>>(RequestResult.InProgress())
@@ -93,9 +96,8 @@ class ArticlesRepository @Inject constructor(
             }
     }
 
-    private companion object{
+    private companion object {
 
         const val LOG_TAG = "ArticlesRepository"
-
     }
 }

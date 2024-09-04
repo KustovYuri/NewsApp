@@ -35,7 +35,7 @@ android {
             )
         }
     }
-    buildFeatures{
+    buildFeatures {
         buildConfig = true
     }
     compileOptions {

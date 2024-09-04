@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.farma.news_data"
+    namespace = "com.farma.news.data"
     compileSdk = 34
 
     defaultConfig {

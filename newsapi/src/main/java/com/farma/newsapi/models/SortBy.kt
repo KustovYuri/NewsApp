@@ -7,8 +7,10 @@ import kotlinx.serialization.Serializable
 enum class SortBy {
     @SerialName("relevancy")
     RELEVANCY,
+
     @SerialName("popularity")
     POPULARITY,
+
     @SerialName("published_at")
     PUBLISHED_AT
 }

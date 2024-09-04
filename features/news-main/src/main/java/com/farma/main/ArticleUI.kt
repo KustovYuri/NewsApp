@@ -1,4 +1,4 @@
-package com.farma.news_main
+package com.farma.main
 
 class ArticleUI(
     val id: Long,

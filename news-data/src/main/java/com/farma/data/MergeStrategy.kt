@@ -1,19 +1,19 @@
-package com.farma.news_data
+package com.farma.data
 
-import com.farma.news_data.RequestResult.Error
-import com.farma.news_data.RequestResult.InProgress
-import com.farma.news_data.RequestResult.Success
-
+import com.farma.data.RequestResult.Error
+import com.farma.data.RequestResult.InProgress
+import com.farma.data.RequestResult.Success
 
 interface MergeStrategy<E> {
-    fun merge(right:E, left: E): E
+    fun merge(right: E, left: E): E
 }
-
 
 /**
  * Дефолтная стратегия мерджа данных из разных источников
  */
-internal class RequestResponseMergeStrategy<T:Any> : MergeStrategy<RequestResult<T>>{
+internal class RequestResponseMergeStrategy<T : Any> : MergeStrategy<RequestResult<T>> {
+
+    @Suppress("CyclomaticComplexMethod")
     override fun merge(right: RequestResult<T>, left: RequestResult<T>): RequestResult<T> {
         return when {
             right is InProgress && left is InProgress -> merge(right, left)
@@ -74,9 +74,10 @@ internal class RequestResponseMergeStrategy<T:Any> : MergeStrategy<RequestResult
         cache: InProgress<T>,
         server: Error<T>
     ): RequestResult<T> {
-        return Error(data = server.data ?: cache.data, error = server.error)
+        return InProgress(data = server.data ?: cache.data)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun merge(
         cache: Error<T>,
         server: InProgress<T>
@@ -84,6 +85,7 @@ internal class RequestResponseMergeStrategy<T:Any> : MergeStrategy<RequestResult
         return server
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun merge(
         cache: Error<T>,
         server: Success<T>

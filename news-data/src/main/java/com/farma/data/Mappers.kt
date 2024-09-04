@@ -1,9 +1,9 @@
-package com.farma.news_data
+package com.farma.data
 
+import com.farma.data.models.Article
+import com.farma.data.models.Source
 import com.farma.database.models.ArticleDBO
 import com.farma.database.models.SourceDBO
-import com.farma.news_data.models.Article
-import com.farma.news_data.models.Source
 import com.farma.newsapi.models.ArticleDTO
 import com.farma.newsapi.models.SourceDTO
 
@@ -58,4 +58,3 @@ internal fun ArticleDTO.toArticleDbo(): ArticleDBO {
         content = content
     )
 }
-
