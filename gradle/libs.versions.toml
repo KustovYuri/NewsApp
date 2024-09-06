@@ -24,7 +24,6 @@ javax-inject = "1"
 coil = "2.6.0"
 detekt = "1.23.6"
 
-
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

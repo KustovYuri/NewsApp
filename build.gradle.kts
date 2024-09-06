@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -12,6 +13,32 @@ plugins {
     alias(libs.plugins.dagger.hilt.android) apply false
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.detekt) apply false
+}
+
+allprojects.forEach {project->
+    project.afterEvaluate{
+        with(project.plugins){
+            if(hasPlugin(libs.plugins.jetpack.compose.compiler.get().pluginId)){
+                tasks.withType<KotlinCompilationTask<*>>().configureEach {
+                    compilerOptions{
+                        allWarningsAsErrors = false
+
+                        freeCompilerArgs.addAll(
+                            "-P",
+                            "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                                    layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics",
+                        )
+
+                        freeCompilerArgs.addAll(
+                            "-P",
+                            "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                                    layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics",
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects.forEach { project ->
