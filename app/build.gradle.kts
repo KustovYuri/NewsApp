@@ -89,5 +89,5 @@ dependencies {
     implementation(project(":features:news-main"))
     implementation(project(":news-uikit"))
 
-//    baselineProfile(project(":baselineprofile"))
+    baselineProfile(project(":baselineprofile"))
 }
