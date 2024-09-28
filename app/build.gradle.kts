@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.jetpack.compose.compiler)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.kapt)
+    alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -24,11 +25,17 @@ android {
 
         buildConfigField("String", "NEWS_API_KEY", "\"37efbf02456f444cac1a5e4028e471c3\"")
         buildConfigField("String", "NEWS_API_BASE_URL", "\"https://newsapi.org/v2/\"")
+
+        resourceConfigurations += setOf("ru", "en")
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters += setOf("armeabi-v7a", "arm64-v8a")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -49,6 +56,14 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/okhttp3/internal/publicsuffix/NOTICE"
+            excludes += "/kotlin/**"
+            excludes += "/META-INF/androidx.*.version"
+            excludes += "/META-INF/com.google.*.version"
+            excludes += "/META-INF/kotlinx_*.version"
+            excludes += "/kotlin-tooling-metadata.json"
+            excludes += "/DebugProbesKt.bin"
+            excludes += "/META-INF/com/android/build/gradle/app-metadata.properties"
         }
     }
 }
@@ -60,6 +75,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     implementation(libs.okhttp)
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
     debugImplementation(libs.okhttp.logging.interceptor)
 
     implementation(libs.dagger.hilt.android)
@@ -71,4 +88,6 @@ dependencies {
     implementation(project(":news-common"))
     implementation(project(":features:news-main"))
     implementation(project(":news-uikit"))
+
+//    baselineProfile(project(":baselineprofile"))
 }
