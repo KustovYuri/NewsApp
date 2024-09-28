@@ -4,14 +4,14 @@ package com.farma.data
  * RequestResult представляет собой запрос обновлениях данных,
  * который может происходить из нескольких источников
  */
-sealed class RequestResult<out E : Any>(open val data: E? = null) {
-    class InProgress<E : Any>(override val data: E? = null) : RequestResult<E>(data)
-    class Success<E : Any>(override val data: E) : RequestResult<E>(data)
-    class Error<E : Any>(override val data: E? = null, val error: Throwable? = null) :
+public sealed class RequestResult<out E : Any>(public open val data: E? = null) {
+    public class InProgress<E : Any>(override val data: E? = null) : RequestResult<E>(data)
+    public class Success<E : Any>(override val data: E) : RequestResult<E>(data)
+    public class Error<E : Any>(override val data: E? = null, public val error: Throwable? = null) :
         RequestResult<E>()
 }
 
-fun <I : Any, O : Any> RequestResult<I>.map(mapper: (I) -> O): RequestResult<O> {
+public fun <I : Any, O : Any> RequestResult<I>.map(mapper: (I) -> O): RequestResult<O> {
     return when (this) {
         is RequestResult.Error -> RequestResult.Error(data?.let(mapper))
         is RequestResult.InProgress -> RequestResult.InProgress(data?.let(mapper))

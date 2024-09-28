@@ -4,8 +4,8 @@ import com.farma.data.RequestResult.Error
 import com.farma.data.RequestResult.InProgress
 import com.farma.data.RequestResult.Success
 
-interface MergeStrategy<E> {
-    fun merge(right: E, left: E): E
+public interface MergeStrategy<E> {
+    public fun merge(right: E, left: E): E
 }
 
 /**

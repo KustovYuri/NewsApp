@@ -20,14 +20,14 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class ArticlesRepository @Inject constructor(
+public class ArticlesRepository @Inject constructor(
     private val database: NewsDatabase,
     private val api: NewsApi,
     private val logger: Logger
 ) {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun getAll(
+    public fun getAll(
         query: String,
         mergeStrategy: MergeStrategy<RequestResult<List<Article>>> = RequestResponseMergeStrategy()
     ): Flow<RequestResult<List<Article>>> {

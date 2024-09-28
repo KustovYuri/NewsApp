@@ -2,7 +2,7 @@ package com.farma.data.models
 
 import java.util.Date
 
-data class Article(
+public data class Article(
     val cacheId: Long = ID_NONE,
     val source: Source?,
     val author: String?,
@@ -13,12 +13,12 @@ data class Article(
     val publishedAt: Date?,
     val content: String?,
 ) {
-    companion object {
-        const val ID_NONE: Long = 0L
+    public companion object {
+        public const val ID_NONE: Long = 0L
     }
 }
 
-data class Source(
+public data class Source(
     val id: String,
     val name: String
 )
