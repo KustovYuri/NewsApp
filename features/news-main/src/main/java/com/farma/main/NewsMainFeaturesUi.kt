@@ -54,7 +54,7 @@ private fun ProgressIndicator(state: State.Loading) {
             CircularProgressIndicator()
         }
     }
-    if (state.articleUIs != null){
+    if (state.articleUIs != null) {
         ArticlesList(articlesState = state.articleUIs)
     }
 }
@@ -71,7 +71,7 @@ private fun ErrorMessage(state: State.Error) {
         ) {
             Text(text = "Error during update", color = NewsTheme.colorScheme.onError)
         }
-        if (state.articleUIs != null){
+        if (state.articleUIs != null) {
             ArticlesList(articlesState = state.articleUIs)
         }
     }
@@ -85,5 +85,3 @@ internal fun NewsEmpty() {
         Text(text = "No news")
     }
 }
-
-
