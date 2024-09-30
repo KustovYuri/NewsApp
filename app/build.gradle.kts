@@ -77,18 +77,17 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.androidx.profileinstaller)
-    "baselineProfile"(project(":baselineprofile"))
     debugImplementation(libs.okhttp.logging.interceptor)
 
     implementation(libs.dagger.hilt.android)
     kapt(libs.dagger.hilt.compiler)
 
-    implementation(project(":news-data"))
-    implementation(project(":database"))
-    implementation(project(":newsapi"))
-    implementation(project(":news-common"))
-    implementation(project(":features:news-main"))
-    implementation(project(":news-uikit"))
+    implementation(projects.newsData)
+    implementation(projects.database)
+    implementation(projects.newsapi)
+    implementation(projects.newsCommon)
+    implementation(projects.features.newsMain)
+    implementation(projects.newsUikit)
 
-    baselineProfile(project(":baselineprofile"))
+    baselineProfile(projects.baselineprofile)
 }
